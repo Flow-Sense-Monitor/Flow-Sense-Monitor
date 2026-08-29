@@ -1,0 +1,9 @@
+[submodule "flowsense-backend"]
+	path = flowsense-backend
+	url = https://github.com/eduardofernandez197/flowsense-backend.git
+[submodule "flowsense-frontend"]
+	path = flowsense-frontend
+	url = https://github.com/eduardofernandez197/flowsense-frontend.git
+[submodule "flowsense-firmware"]
+	path = flowsense-firmware
+	url = https://github.com/eduardofernandez197/flowsense-firmware.git
