@@ -1,0 +1,4 @@
+# Variáveis de ambiente com senhas e chaves
+.env
+.env.*
+!.env.example
