@@ -1,0 +1,31 @@
+name: Deploy na VM
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vm
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configurar SSH
+        env:
+          VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
+          VM_KNOWN_HOSTS: ${{ secrets.VM_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$VM_SSH_KEY" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          echo "$VM_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      # A chave só tem permissão para rodar o script de deploy na VM
+      # (git pull do repositório + docker compose up --build).
+      - name: Deploy
+        env:
+          VM_HOST: ${{ secrets.VM_HOST }}
+        run: ssh -i ~/.ssh/deploy root@"$VM_HOST"

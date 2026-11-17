@@ -32,7 +32,7 @@ flowsense/
 ├── flowsense-backend/    # Spring Boot 4, Java 21, MySQL, Flyway, Paho MQTT — submódulo
 ├── flowsense-frontend/   # React 18 + Vite + Recharts, servido por nginx — submódulo
 ├── scripts/simular-esp32.sh  # simula o ESP32 publicando no broker (testes sem Wokwi)
-├── docs/seguranca.md     # checklist OWASP IoT Top 10
+├── .github/workflows/    # deploy automático na VM (GitHub Actions)
 ├── docker-compose.yml    # sobe MySQL + backend + frontend
 └── .env.example          # variáveis de ambiente (copie para .env)
 ```
@@ -200,6 +200,17 @@ Os containers têm `restart: unless-stopped`: voltam sozinhos se a VM reiniciar.
 
 Para atualizar depois de um `git pull`: `docker compose up -d --build`. Os dados do MySQL ficam no volume `mysql-dados`.
 
+### CI/CD (GitHub Actions)
+
+- **CI:** a cada push e pull request, o backend roda os testes (`./mvnw test`) e o frontend roda lint e build (`.github/workflows/ci.yml` de cada submódulo).
+- **Deploy:** a cada push na `main` deste repositório (ou manualmente em *Actions → Deploy na VM → Run workflow*), o workflow `.github/workflows/deploy.yml` entra na VM por SSH. Lá, o script `scripts/deploy-vm.sh` (instalado em `/usr/local/bin/flowsense-deploy`) atualiza o código e os submódulos, roda `docker compose up -d --build` e confere se a API responde.
+- O deploy usa as versões dos submódulos registradas na raiz. Depois de dar push no backend ou no frontend, atualize o submódulo aqui e dê push para publicar:
+  ```bash
+  git add flowsense-backend flowsense-frontend && git commit -m "Atualiza submódulos" && git push
+  ```
+- **Secrets** (*Settings → Secrets and variables → Actions*): `VM_HOST` (IP da VM), `VM_SSH_KEY` (chave privada do deploy) e `VM_KNOWN_HOSTS` (saída de `ssh-keyscan IP-DA-VM`).
+- Na VM, a chave pública do deploy fica em `/root/.ssh/authorized_keys` com `restrict,command="/usr/local/bin/flowsense-deploy"`: ela só consegue rodar o deploy, sem terminal nem túneis.
+
 ### Ver o banco com o MySQL Workbench
 
 O MySQL escuta só em `127.0.0.1` da VM (porta `DB_PORT`), então o acesso é por túnel SSH. Nenhuma porta nova é aberta na internet.
@@ -224,4 +235,9 @@ As tabelas são criadas pelo Flyway (`flyway_schema_history` registra as migraç
 
 ## Segurança
 
-Veja [docs/seguranca.md](docs/seguranca.md) (checklist OWASP IoT Top 10, com o que foi feito e as limitações conhecidas).
+- Nenhuma credencial no código: tudo vem do `.env`, que não vai para o Git (`.env.example` só tem valores de exemplo).
+- Comandos (relé, limites, intervalo) exigem a chave `X-API-Key`; o CORS só libera as origens de `FLOWSENSE_CORS_ORIGENS`.
+- O backend aceita só os dispositivos de `FLOWSENSE_DISPOSITIVOS`, limita o tamanho das mensagens MQTT e valida tipo e faixa de cada campo.
+- Banco e backend escutam só em `127.0.0.1` da VM; os containers do backend rodam sem root.
+- A chave SSH do deploy só consegue rodar o script de deploy na VM (sem terminal).
+- Limitação conhecida: o broker `broker.hivemq.com` é público, sem autenticação nem TLS (é o que o Wokwi gratuito alcança). O backend já suporta usuário, senha e TLS para trocar de broker.
