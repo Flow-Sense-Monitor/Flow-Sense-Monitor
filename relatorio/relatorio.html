@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>FlowSense — Relatório Técnico</title>
+<style>
+  @page {
+    size: A4;
+    margin: 22mm 20mm 20mm 20mm;
+    @top-left { content: "FlowSense — Relatório Técnico"; font: 8.5pt "Segoe UI", Arial, sans-serif; color: #6b7280; }
+    @top-right { content: "Internet das Coisas · 2º semestre/2026"; font: 8.5pt "Segoe UI", Arial, sans-serif; color: #6b7280; }
+    @bottom-center { content: counter(page); font: 9pt "Segoe UI", Arial, sans-serif; color: #374151; }
+  }
+  @page capa { @top-left { content: none; } @top-right { content: none; } @bottom-center { content: none; } }
+
+  :root { --azul: #1e3a8a; --azul2: #2563eb; --verde: #15803d; --laranja: #c2410c; --cinza: #6b7280; --borda: #d1d5db; --fundo: #f3f4f6; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Segoe UI", Calibri, Arial, sans-serif; font-size: 10.5pt; line-height: 1.5; color: #111827; margin: 0; }
+  h1, h2, h3 { color: var(--azul); line-height: 1.25; break-after: avoid; }
+  h2 { font-size: 15pt; margin: 22px 0 8px; padding-bottom: 4px; border-bottom: 2px solid var(--azul); }
+  h3 { font-size: 11.5pt; margin: 16px 0 6px; }
+  p { margin: 0 0 8px; text-align: justify; hyphens: auto; }
+  ul, ol { margin: 0 0 8px; padding-left: 20px; }
+  li { margin-bottom: 3px; }
+  code, pre { font-family: Consolas, "Cascadia Mono", monospace; }
+  code { font-size: 9pt; background: var(--fundo); padding: 0 3px; border-radius: 3px; }
+  pre { font-size: 8.3pt; line-height: 1.4; background: #0f172a; color: #e2e8f0; padding: 9px 11px; border-radius: 6px; white-space: pre-wrap; word-break: break-all; margin: 6px 0 10px; break-inside: avoid; }
+  pre .c { color: #94a3b8; }
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 9.2pt; break-inside: auto; }
+  th, td { border: 1px solid var(--borda); padding: 4px 7px; text-align: left; vertical-align: top; }
+  th { background: #e0e7ff; color: var(--azul); font-weight: 600; }
+  tr { break-inside: avoid; }
+  figure { margin: 10px 0 14px; text-align: center; break-inside: avoid; }
+  figure img { max-width: 100%; border: 1px solid var(--borda); border-radius: 4px; }
+  figcaption { font-size: 9pt; color: #374151; margin-top: 5px; }
+  figcaption b { color: var(--azul); }
+  .nota { background: #eff6ff; border-left: 4px solid var(--azul2); padding: 7px 11px; margin: 8px 0 12px; font-size: 9.6pt; break-inside: avoid; }
+  .nota.aviso { background: #fff7ed; border-color: var(--laranja); }
+  .duas { display: flex; gap: 14px; align-items: flex-start; }
+  .duas > * { flex: 1; }
+  .quebra { break-before: page; }
+  .ok { color: var(--verde); font-weight: 600; }
+
+  /* Capa */
+  .capa { page: capa; height: 253mm; display: flex; flex-direction: column; justify-content: space-between; text-align: center; padding: 18mm 0 6mm; }
+  .capa .topo { font-size: 11pt; color: var(--cinza); letter-spacing: .5px; }
+  .capa h1 { font-size: 30pt; margin: 0; color: var(--azul); }
+  .capa .sub { font-size: 15pt; color: #1f2937; margin-top: 8px; }
+  .capa .tipo { margin-top: 26px; font-size: 12pt; color: #374151; }
+  .capa .faixa { height: 6px; width: 120px; margin: 22px auto; background: linear-gradient(90deg, var(--azul), var(--azul2), #22c55e); border-radius: 3px; }
+  .capa .integrantes { font-size: 11.5pt; line-height: 1.9; }
+  .capa .integrantes b { display: block; color: var(--azul); margin-bottom: 4px; font-size: 10.5pt; letter-spacing: .5px; }
+  .capa .rodape { font-size: 10.5pt; color: #374151; line-height: 1.7; }
+  .capa .links { font-size: 9.5pt; color: var(--cinza); margin-top: 10px; }
+
+  .sumario { columns: 2; column-gap: 30px; font-size: 10pt; margin-bottom: 6px; }
+  .sumario div { break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<!-- ============================== CAPA ============================== -->
+<section class="capa">
+  <div>
+    <div class="topo">INTERNET DAS COISAS (IoT) · TRABALHO FINAL</div>
+    <div class="faixa"></div>
+    <h1>FlowSense</h1>
+    <div class="sub">Monitoramento de Energia Elétrica em Tempo Real</div>
+    <div class="tipo">Relatório técnico</div>
+  </div>
+  <div class="integrantes">
+    <b>INTEGRANTES</b>
+    Eduardo de Carvalho Fernandez<br>
+    Felipe Kenji Inomata Lamb<br>
+    João Pedro Cordasso Trento<br>
+    Luis Eduardo Lucas Da Silva<br>
+    Ronei Herter
+  </div>
+  <div class="rodape">
+    Prof. Marcos Augusto Campagnaro Mucelini<br>
+    Novembro de 2026
+    <div class="links">
+      Repositório: github.com/Flow-Sense-Monitor/Flow-Sense-Monitor<br>
+      Simulação: wokwi.com/projects/472740981735326721 · Dashboard: http://168.138.148.127
+    </div>
+  </div>
+</section>
+
+<!-- ============================== 1 ============================== -->
+<h2 style="margin-top:0">Sumário</h2>
+<div class="sumario">
+  <div>1. Problema e solução</div>
+  <div>2. Arquitetura</div>
+  <div>3. Hardware</div>
+  <div>4. Software</div>
+  <div>5. Comunicação</div>
+  <div>6. Testes</div>
+  <div>7. Segurança</div>
+  <div>8. Conclusão</div>
+  <div>9. Uso de ferramentas de IA</div>
+  <div>10. Referências</div>
+</div>
+
+<h2>1. Problema e solução</h2>
+<h3>Motivação</h3>
+<p>Em residências, pequenos comércios e empresas, o consumo de energia elétrica só é conhecido quando a conta chega, no fim do mês. Não se sabe em quais horários ou com quais equipamentos o gasto acontece, e oscilações de tensão (picos e quedas) só são percebidas depois que um aparelho queima. Falta visibilidade em tempo real e, principalmente, um aviso antes do prejuízo.</p>
+<h3>Público atendido</h3>
+<ul>
+  <li><b>Morador</b> que quer entender e reduzir a conta de luz.</li>
+  <li><b>Dono de comércio</b> que precisa proteger equipamentos sensíveis (freezers, máquinas, computadores).</li>
+  <li><b>Responsável pela manutenção</b> em uma empresa, que precisa identificar sobrecargas e falhas na rede.</li>
+</ul>
+<h3>Solução proposta</h3>
+<p>O FlowSense é um medidor conectado. Um ESP32 lê continuamente a tensão e a corrente de um circuito, calcula a potência instantânea (W) e o consumo acumulado (kWh) e publica as medições por MQTT. Um backend em Spring Boot recebe as mensagens, valida, guarda no MySQL e mantém o histórico. Um dashboard web mostra os valores em tempo real, gráficos por período, custo estimado e a lista de alertas, e permite desligar a carga e ajustar os limites de proteção.</p>
+<p>A proteção é decidida no próprio dispositivo, sem depender da internet. Quando a tensão sai da faixa segura ou a corrente passa do limite, o ESP32 alerta na hora (LED vermelho, buzzer intermitente, OLED). Se o problema durar menos de 5 s, como um pico que cai e volta, o alerta some sem desligar nada. Se durar 5 s seguidos, o relé desliga a carga e o buzzer toca sem parar até alguém religar pelo dashboard. Assim, oscilações rápidas não derrubam a instalação, mas uma falha sustentada protege os equipamentos.</p>
+
+<!-- ============================== 2 ============================== -->
+<h2>2. Arquitetura</h2>
+<p>O sistema segue as quatro camadas da disciplina (Figura 1): o ESP32 mede e age, a rede leva as mensagens, o backend processa e guarda, e o dashboard mostra tudo ao usuário.</p>
+
+<figure>
+<svg viewBox="0 0 860 290" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="setaV" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#15803d"/></marker>
+    <marker id="setaL" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+  </defs>
+  <g font-size="14" font-weight="700" fill="#fff" text-anchor="middle">
+    <rect x="8" y="8" width="190" height="36" rx="6" fill="#15803d"/><text x="103" y="31">1. Percepção</text>
+    <rect x="224" y="8" width="190" height="36" rx="6" fill="#0369a1"/><text x="319" y="31">2. Rede</text>
+    <rect x="440" y="8" width="190" height="36" rx="6" fill="#1e3a8a"/><text x="535" y="31">3. Processamento</text>
+    <rect x="656" y="8" width="190" height="36" rx="6" fill="#7c3aed"/><text x="751" y="31">4. Aplicação</text>
+  </g>
+
+  <g font-size="13" fill="#0f172a" text-anchor="middle">
+    <rect x="8" y="58" width="190" height="170" rx="10" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+    <text x="103" y="86" font-size="16" font-weight="700">ESP32</text>
+    <text x="103" y="114">mede tensão e corrente</text>
+    <text x="103" y="138">liga e desliga o relé</text>
+    <text x="103" y="162">LEDs, buzzer e OLED</text>
+    <text x="103" y="196" font-size="12" fill="#166534" font-weight="600">regra dos 5 s</text>
+    <text x="103" y="213" font-size="12" fill="#166534" font-weight="600">roda no próprio ESP32</text>
+
+    <rect x="224" y="58" width="190" height="170" rx="10" fill="#e0f2fe" stroke="#0369a1" stroke-width="1.5"/>
+    <text x="319" y="86" font-size="16" font-weight="700">Wi-Fi + MQTT</text>
+    <text x="319" y="114">broker HiveMQ</text>
+    <text x="319" y="138">mensagens em JSON</text>
+    <text x="319" y="196" font-size="12" fill="#075985" font-weight="600">HTTP entre o dashboard</text>
+    <text x="319" y="213" font-size="12" fill="#075985" font-weight="600">e o backend</text>
+
+    <rect x="440" y="58" width="190" height="170" rx="10" fill="#e0e7ff" stroke="#1e3a8a" stroke-width="1.5"/>
+    <text x="535" y="86" font-size="16" font-weight="700">Backend</text>
+    <text x="535" y="108" font-size="12" fill="#475569">Spring Boot</text>
+    <text x="535" y="132">valida e guarda os dados</text>
+    <text x="535" y="156">envia os comandos</text>
+    <rect x="470" y="176" width="130" height="40" rx="8" fill="#fff" stroke="#1e3a8a"/>
+    <text x="535" y="201" font-weight="700">MySQL</text>
+
+    <rect x="656" y="58" width="190" height="170" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+    <text x="751" y="86" font-size="16" font-weight="700">Dashboard web</text>
+    <text x="751" y="108" font-size="12" fill="#475569">React</text>
+    <text x="751" y="132">valores ao vivo</text>
+    <text x="751" y="156">gráficos e alertas</text>
+    <text x="751" y="180">ligar / desligar a carga</text>
+    <text x="751" y="204">ajustar os limites</text>
+  </g>
+
+  <g stroke-width="2.5" fill="none">
+    <path d="M199,125 L222,125" stroke="#15803d" marker-end="url(#setaV)"/>
+    <path d="M415,125 L438,125" stroke="#15803d" marker-end="url(#setaV)"/>
+    <path d="M631,125 L654,125" stroke="#15803d" marker-end="url(#setaV)"/>
+    <path d="M222,160 L199,160" stroke="#c2410c" marker-end="url(#setaL)"/>
+    <path d="M438,160 L415,160" stroke="#c2410c" marker-end="url(#setaL)"/>
+    <path d="M654,160 L631,160" stroke="#c2410c" marker-end="url(#setaL)"/>
+  </g>
+
+  <g font-size="12.5" fill="#0f172a">
+    <path d="M190,262 L222,262" stroke="#15803d" stroke-width="2.5" marker-end="url(#setaV)"/>
+    <text x="230" y="266">leituras e alertas</text>
+    <path d="M402,262 L370,262" stroke="#c2410c" stroke-width="2.5" marker-end="url(#setaL)"/>
+    <text x="410" y="266">comandos</text>
+    <text x="540" y="266" fill="#475569">servidor: Docker numa VM da Oracle Cloud</text>
+  </g>
+</svg>
+<figcaption><b>Figura 1.</b> Arquitetura do FlowSense nas quatro camadas.</figcaption>
+</figure>
+
+<p><b>Leitura:</b> a cada 2 s o ESP32 publica a medição no MQTT; o backend valida e salva no MySQL; o dashboard busca os dados pela API e atualiza a tela.</p>
+<p><b>Comando:</b> o usuário clica em <i>Desligar carga</i>; o backend publica o comando no MQTT; o ESP32 recebe e desliga o relé.</p>
+<p><b>Servidor:</b> backend, banco e dashboard rodam em Docker numa VM da Oracle Cloud, com deploy automático pelo GitHub Actions.</p>
+
+<!-- ============================== 3 ============================== -->
+<h2>3. Hardware</h2>
+<p>O projeto foi montado no simulador Wokwi, como previsto na proposta. Os sensores ZMPT101B (tensão) e SCT-013-000 (corrente) não existem na biblioteca do simulador e foram representados por dois potenciômetros deslizantes ligados às entradas analógicas do ESP32. O restante (relé, LEDs, buzzer e display) é o componente real disponível no Wokwi.</p>
+
+<div class="duas" style="break-inside:avoid">
+<figure style="flex:0 0 40%;margin-top:4px">
+  <img src="img/circuito-wokwi.jpg" alt="Circuito no Wokwi">
+  <figcaption><b>Figura 2.</b> Diagrama de ligação no Wokwi.</figcaption>
+</figure>
+<div>
+<h3 style="margin-top:4px">Lista de componentes</h3>
+<table>
+  <tr><th>Componente</th><th>Função</th></tr>
+  <tr><td>ESP32 DevKit (ESP32-WROOM-32)</td><td>Leitura, cálculo, regra local e Wi-Fi/MQTT</td></tr>
+  <tr><td>Potenciômetro deslizante (×2)</td><td>Simulam os sinais do ZMPT101B e do SCT-013-000</td></tr>
+  <tr><td>Módulo relé 5 V, 1 canal</td><td>Liga/desliga a carga</td></tr>
+  <tr><td>LED verde + resistor 1 kΩ</td><td>Estado normal</td></tr>
+  <tr><td>LED vermelho + resistor 1 kΩ</td><td>Estado de alerta</td></tr>
+  <tr><td>Buzzer</td><td>Alarme: intermitente (alerta) ou contínuo (proteção disparada)</td></tr>
+  <tr><td>Display OLED SSD1306 128×64 (I2C, 0x3C)</td><td>Valores e estado no próprio aparelho</td></tr>
+</table>
+</div>
+</div>
+<h3>Tabela de pinos</h3>
+<table>
+  <tr><th>GPIO</th><th>Ligado a</th><th>Tipo</th></tr>
+  <tr><td>34</td><td>Potenciômetro de tensão (SIG)</td><td>Entrada analógica (ADC1)</td></tr>
+  <tr><td>35</td><td>Potenciômetro de corrente (SIG)</td><td>Entrada analógica (ADC1)</td></tr>
+  <tr><td>23</td><td>Relé (IN)</td><td>Saída digital</td></tr>
+  <tr><td>25</td><td>LED verde (via 1 kΩ)</td><td>Saída digital</td></tr>
+  <tr><td>26</td><td>LED vermelho (via 1 kΩ)</td><td>Saída digital</td></tr>
+  <tr><td>27</td><td>Buzzer</td><td>Saída (tom 2 kHz)</td></tr>
+  <tr><td>21 / 22</td><td>OLED SDA / SCL</td><td>I2C</td></tr>
+  <tr><td>3V3 · 5V · GND</td><td>Potenciômetros e OLED (3V3), relé (5V)</td><td>Alimentação</td></tr>
+</table>
+
+<p><b>Conversão das leituras.</b> O ADC do ESP32 tem 12 bits (0 a 4095). Na simulação, o valor lido é convertido linearmente para a escala do sensor: tensão = ADC × 300 / 4095 (0 a 300 V) e corrente = ADC × 30 / 4095 (0 a 30 A). Os GPIOs 34 e 35 pertencem ao ADC1, que continua funcionando com o Wi-Fi ligado (o ADC2 não pode ser usado junto com o Wi-Fi no ESP32).</p>
+<div class="nota">Na proposta, a placa citada é o ESP32 DevKit V1. No Wokwi foi usada a placa ESP32 DevKitC V4, que tem o mesmo módulo ESP32-WROOM-32 e os mesmos GPIOs usados no projeto; o código é o mesmo para as duas.</div>
+
+<!-- ============================== 4 ============================== -->
+<h2>4. Software</h2>
+<h3>Organização do código</h3>
+<p>O código fica em um repositório principal com três submódulos, um para cada parte do sistema:</p>
+<pre>Flow-Sense-Monitor/
+├── wokwi/sketch.ino, libraries.txt   <span class="c"># código do ESP32 usado na simulação</span>
+├── flowsense-backend/                <span class="c"># Spring Boot (submódulo)</span>
+│   ├── mqtt/        MqttClienteFlowsense, MqttRoteador
+│   ├── service/     LeituraService, ConsultaService, ComandoService, EventoService,
+│   │                ValidadorPayload, CalculadoraConsumo, LimpezaService
+│   ├── controller/  DispositivoController (API REST)
+│   ├── entity/ repository/ dto/ exception/ config/
+│   └── resources/db/migration/V1__criar_tabelas.sql   <span class="c"># Flyway</span>
+├── flowsense-frontend/               <span class="c"># React + Vite (submódulo)</span>
+│   └── src/ components/ (Avisos, Card, ControleRele, Graficos, ListaEventos, Configuracao)
+│            context/DataContext, hooks/usePolling, services/api, utils/formatacao
+├── flowsense-firmware/               <span class="c"># reservado para o hardware físico (submódulo)</span>
+├── docker-compose.yml, .env.example  <span class="c"># MySQL + backend + dashboard</span>
+├── scripts/  simular-esp32.sh, deploy-vm.sh
+└── .github/workflows/deploy.yml      <span class="c"># deploy automático na VM</span></pre>
+
+<h3>Bibliotecas utilizadas</h3>
+<table>
+  <tr><th>Parte</th><th>Bibliotecas e ferramentas</th></tr>
+  <tr><td>ESP32</td><td>Arduino core para ESP32 (<code>WiFi</code>, <code>Preferences</code>, <code>Wire</code>, <code>time</code>/NTP), <b>PubSubClient</b> (MQTT), <b>ArduinoJson</b> (JSON), <b>Adafruit SSD1306</b> e <b>Adafruit GFX</b> (display)</td></tr>
+  <tr><td>Backend</td><td>Java 21, <b>Spring Boot 4.1</b> (Web, Data JPA, Validation), <b>Flyway</b>, MySQL Connector/J, <b>Eclipse Paho MQTT 1.2.5</b>, Lombok, JUnit 5 + Mockito</td></tr>
+  <tr><td>Frontend</td><td><b>React 18</b>, <b>Vite 7</b>, <b>Recharts 2</b> (gráficos), ESLint</td></tr>
+  <tr><td>Infraestrutura</td><td>Docker Compose, MySQL 8.4, nginx, VM Oracle Cloud (Ubuntu 24.04), GitHub Actions</td></tr>
+</table>
+
+<h3>Rotinas centrais do ESP32</h3>
+<p>O <code>loop()</code> não bloqueia: a medição e a regra local rodam a cada volta (≈10 ms), com ou sem rede, e a parte de rede só é tentada quando há Wi-Fi.</p>
+<table>
+  <tr><th style="width:28%">Função</th><th>O que faz</th></tr>
+  <tr><td><code>lerSensores()</code></td><td>Lê os dois ADCs, converte para V e A, calcula a potência (zero com o relé aberto) e integra o consumo: kWh += W × Δt.</td></tr>
+  <tr><td><code>avaliarRegraLocal()</code></td><td>Regra de proteção (R2). Classifica a situação (sobrecorrente &gt; sobretensão &gt; subtensão &gt; normal), conta há quanto tempo os valores estão fora da faixa e, após 5 s seguidos, desliga o relé e trava a proteção. Publica um alerta sempre que o estado muda e outro no momento do desligamento.</td></tr>
+  <tr><td><code>atualizarSaidas()</code></td><td>LED verde/vermelho e buzzer: intermitente (300 ms) durante o alerta e contínuo com a proteção disparada.</td></tr>
+  <tr><td><code>publicarLeitura()</code> / <code>publicarAlerta()</code></td><td>Montam o JSON com ArduinoJson e publicam nos tópicos <code>leituras</code> e <code>alertas</code>.</td></tr>
+  <tr><td><code>aoReceberComando()</code></td><td>Trata <code>{"rele"}</code>, <code>{"limites"}</code> e <code>{"intervalo"}</code>; recusa valores fora da faixa física; grava limites e intervalo na flash (<code>Preferences</code>) e confirma publicando uma leitura.</td></tr>
+  <tr><td><code>conectarMqtt()</code></td><td>Conecta com <i>Last Will</i> (<code>status = offline</code>, retido), publica <code>online</code> e assina <code>comandos</code>. Tenta de novo a cada 5 s se cair.</td></tr>
+  <tr><td><code>atualizarOled()</code></td><td>Mostra Wi-Fi/MQTT, V, A, W, kWh, estado do relé, alerta e a contagem regressiva até o desligamento.</td></tr>
+</table>
+
+<figure>
+<svg viewBox="0 0 860 210" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+  <defs><marker id="s2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#334155"/></marker></defs>
+  <rect x="20" y="55" width="200" height="96" rx="10" fill="#dcfce7" stroke="#15803d" stroke-width="1.5"/>
+  <text x="120" y="80" text-anchor="middle" font-weight="700" fill="#15803d">NORMAL</text>
+  <text x="120" y="102" text-anchor="middle">LED verde · relé ligado</text>
+  <text x="120" y="120" text-anchor="middle">buzzer desligado</text>
+  <rect x="330" y="55" width="200" height="96" rx="10" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5"/>
+  <text x="430" y="80" text-anchor="middle" font-weight="700" fill="#a16207">ALERTA (&lt; 5 s)</text>
+  <text x="430" y="102" text-anchor="middle">LED vermelho · relé ligado</text>
+  <text x="430" y="120" text-anchor="middle">buzzer intermitente</text>
+  <text x="430" y="138" text-anchor="middle">OLED: contagem 5…1 s</text>
+  <rect x="640" y="55" width="200" height="96" rx="10" fill="#fee2e2" stroke="#b91c1c" stroke-width="1.5"/>
+  <text x="740" y="80" text-anchor="middle" font-weight="700" fill="#b91c1c">PROTEÇÃO DISPARADA</text>
+  <text x="740" y="102" text-anchor="middle">relé DESLIGADO</text>
+  <text x="740" y="120" text-anchor="middle">buzzer contínuo</text>
+  <text x="740" y="138" text-anchor="middle">alerta travado no motivo</text>
+  <g stroke="#334155" stroke-width="1.6" fill="none" marker-end="url(#s2)">
+    <path d="M220,85 L330,85"/>
+    <path d="M330,125 L220,125"/>
+    <path d="M530,103 L640,103"/>
+    <path d="M740,151 C740,182 120,182 120,151"/>
+  </g>
+  <text x="275" y="77" text-anchor="middle" font-size="11">valor fora da faixa</text>
+  <text x="275" y="141" text-anchor="middle" font-size="11">voltou antes de 5 s</text>
+  <text x="585" y="95" text-anchor="middle" font-size="11">5 s seguidos fora</text>
+  <text x="430" y="200" text-anchor="middle" font-size="11">comando {"rele":"ON"} pelo dashboard (se o problema continuar, volta a contar 5 s)</text>
+  <text x="430" y="30" text-anchor="middle" font-size="11" fill="#475569">Faixa padrão: 198 V ≤ tensão ≤ 242 V e corrente ≤ 20 A (ajustável pelo dashboard)</text>
+</svg>
+<figcaption><b>Figura 3.</b> Regra de decisão local executada no ESP32 (função <code>avaliarRegraLocal</code>).</figcaption>
+</figure>
+
+<h3>Backend e dashboard</h3>
+<p><b>Recepção MQTT.</b> <code>MqttClienteFlowsense</code> mantém a conexão com o broker (reconexão automática) e entrega cada mensagem ao <code>MqttRoteador</code>, que separa o tópico, descarta dispositivos fora da lista <code>FLOWSENSE_DISPOSITIVOS</code>, mensagens acima de 2 KB e JSON inválido, sem derrubar o serviço. O <code>ValidadorPayload</code> confere tipo e faixa de cada campo.</p>
+<p><b>Armazenamento.</b> O <code>LeituraService</code> sobrescreve a linha do dispositivo em <code>leitura_atual</code>, acumula médias, mínimos, máximos e consumo do minuto em <code>historico_resumido</code> e grava em <code>eventos_importantes</code> os alertas, as mudanças online/offline e os comandos. O consumo do período é a soma das diferenças positivas de kWh; quando o valor diminui (ESP32 reiniciou), a leitura conta como recomeço e nunca gera consumo negativo (<code>CalculadoraConsumo</code>). Um agendamento diário apaga dados com mais de 90 dias.</p>
+<p><b>API e erros.</b> O <code>DispositivoController</code> expõe a API REST (Seção 5). Os comandos usam Bean Validation e exigem o cabeçalho <code>X-API-Key</code>. O <code>GlobalExceptionHandler</code> devolve erros em JSON padronizado: 400 (valor inválido), 401 (sem chave), 404 (dispositivo desconhecido) e 503 (backend sem conexão com o broker).</p>
+<p><b>Dashboard.</b> Comunica-se com o backend apenas por HTTP. O hook <code>usePolling</code> busca a leitura atual a cada 2 s, os eventos a cada 5 s e o histórico a cada 30 s. O estado é mostrado por cores (verde normal, vermelho alerta, cinza dado antigo), faixas de aviso (servidor fora, dispositivo offline, alerta e proteção disparada) e confirmação antes de ligar ou desligar a carga (Figuras 4 e 5).</p>
+
+<figure>
+  <img src="img/dashboard-topo.jpg" alt="Dashboard: cartões">
+  <figcaption><b>Figura 4.</b> Dashboard com dados reais da simulação: tensão, corrente, potência, consumo, alerta atual e controle do relé.</figcaption>
+</figure>
+<figure>
+  <img src="img/dashboard-historico.jpg" alt="Dashboard: histórico" style="max-height:118mm">
+  <figcaption><b>Figura 5.</b> Histórico da última hora (tensão, corrente e consumo, com as linhas de limite), custo estimado, lista de eventos e configuração dos limites.</figcaption>
+</figure>
+
+<!-- ============================== 5 ============================== -->
+<h2>5. Comunicação</h2>
+<h3>Protocolo adotado e justificativa</h3>
+<p>O ESP32 usa <b>MQTT sobre Wi-Fi</b>; o dashboard usa <b>HTTP (API REST)</b> com o backend. A escolha do MQTT considerou os quatro critérios pedidos:</p>
+<table>
+  <tr><th style="width:17%">Critério</th><th>Justificativa</th></tr>
+  <tr><td>Alcance</td><td>O medidor fica no quadro de energia de uma casa ou comércio, onde já existe Wi-Fi (dezenas de metros em ambiente interno). Bluetooth/BLE teria alcance menor e exigiria um gateway para chegar à internet.</td></tr>
+  <tr><td>Consumo</td><td>O Wi-Fi gasta mais que o BLE, mas o FlowSense é alimentado pela própria rede elétrica que mede, então operar com bateria não é requisito. O MQTT ainda economiza: a conexão fica aberta e cada mensagem tem cabeçalho de poucos bytes, sem o custo de abrir uma requisição HTTP a cada leitura.</td></tr>
+  <tr><td>Taxa de dados</td><td>Uma leitura tem cerca de 220 bytes a cada 2 s (≈ 1 kbit/s), muito abaixo da capacidade do Wi-Fi. O modelo publicação/assinatura permite que o backend receba as leituras e, ao mesmo tempo, envie comandos ao dispositivo a qualquer momento, sem consultas periódicas.</td></tr>
+  <tr><td>Custo</td><td>O ESP32 já tem Wi-Fi integrado (nenhum módulo extra) e o broker público <code>broker.hivemq.com</code> é gratuito e acessível tanto pelo Wokwi quanto pelo backend. Pode ser trocado por um broker próprio (ex.: Mosquitto) mudando só o endereço.</td></tr>
+</table>
+<p>Recursos do MQTT usados no projeto: <b>QoS 1</b> nos comandos, alertas e status (entrega garantida), QoS 0 nas leituras periódicas (uma perdida é substituída 2 s depois), mensagem <b>retida</b> e <b>Last Will</b> no tópico <code>status</code>, para o backend saber na hora quando o dispositivo cai.</p>
+
+<h3>Tópicos</h3>
+<table>
+  <tr><th>Tópico</th><th>Quem publica</th><th>Quando</th><th>Conteúdo</th></tr>
+  <tr><td><code>flowsense/{id}/leituras</code></td><td>ESP32</td><td>a cada 2 s (configurável)</td><td>JSON com a leitura completa</td></tr>
+  <tr><td><code>flowsense/{id}/alertas</code></td><td>ESP32</td><td>quando o alerta muda e no desligamento</td><td>JSON com tipo, valores e relé</td></tr>
+  <tr><td><code>flowsense/{id}/status</code></td><td>ESP32 / broker</td><td>ao conectar / quando cai</td><td><code>online</code> ou <code>offline</code> (retido, LWT)</td></tr>
+  <tr><td><code>flowsense/{id}/comandos</code></td><td>backend</td><td>quando o usuário age no dashboard</td><td>JSON com o comando</td></tr>
+</table>
+
+<h3>Formato do payload</h3>
+<table>
+  <tr><th style="width:20%">Campo</th><th style="width:18%">Tipo</th><th>Significado</th></tr>
+  <tr><td><code>dispositivo</code></td><td>texto</td><td>identificador do ESP32 (deve bater com o tópico)</td></tr>
+  <tr><td><code>tensao</code>, <code>corrente</code></td><td>número</td><td>V (0–300) e A (0–30)</td></tr>
+  <tr><td><code>potencia</code>, <code>kwh</code></td><td>número</td><td>W instantâneo e consumo acumulado desde que o ESP32 ligou</td></tr>
+  <tr><td><code>rele</code></td><td><code>"ON"</code> | <code>"OFF"</code></td><td>estado da carga</td></tr>
+  <tr><td><code>alerta</code> / <code>tipo</code></td><td>texto</td><td><code>NORMAL</code>, <code>SOBRETENSAO</code>, <code>SUBTENSAO</code> ou <code>SOBRECORRENTE</code></td></tr>
+  <tr><td><code>limites</code></td><td>objeto</td><td><code>tensaoMin</code>, <code>tensaoMax</code>, <code>correnteMax</code> em uso</td></tr>
+  <tr><td><code>intervalo</code></td><td>número</td><td>ms entre leituras (500–60000)</td></tr>
+  <tr><td><code>timestamp</code></td><td>número</td><td>horário Unix (UTC) via NTP; <code>0</code> antes de sincronizar (o backend usa o horário do servidor)</td></tr>
+</table>
+
+<h3>Exemplos reais de mensagens</h3>
+<p>Mensagens capturadas do broker em 17/11/2026, com a simulação do Wokwi em execução (<code>mosquitto_sub -t "flowsense/esp32-01/#" -v</code>):</p>
+<pre><span class="c"># leitura normal (21:07:06, horário de Brasília)</span>
+flowsense/esp32-01/leituras {"dispositivo":"esp32-01","tensao":218.17,"corrente":10.32,"potencia":2252.01,"kwh":0.50289,"rele":"ON","alerta":"NORMAL","limites":{"tensaoMin":198,"tensaoMax":242,"correnteMax":20},"intervalo":2000,"timestamp":1794960426}
+
+<span class="c"># subtensão detectada: alerta na hora, relé ainda ligado (relógio ainda não sincronizado → timestamp 0)</span>
+flowsense/esp32-01/alertas {"dispositivo":"esp32-01","tipo":"SUBTENSAO","tensao":0.00,"corrente":0.00,"rele":"ON","timestamp":0}
+
+<span class="c"># 5 s depois, ainda fora da faixa: a proteção desliga o relé e publica de novo</span>
+flowsense/esp32-01/alertas {"dispositivo":"esp32-01","tipo":"SUBTENSAO","tensao":0.00,"corrente":0.00,"rele":"OFF","timestamp":1794960763}
+
+flowsense/esp32-01/status online</pre>
+<p>Comandos aceitos pelo ESP32 (publicados pelo backend em <code>comandos</code>):</p>
+<pre>{"rele":"OFF"}
+{"limites":{"tensaoMin":200,"tensaoMax":240,"correnteMax":15}}
+{"intervalo":5000}</pre>
+
+<h3>API REST (dashboard ↔ backend)</h3>
+<table>
+  <tr><th style="width:44%">Método e rota</th><th>Função</th></tr>
+  <tr><td><code>GET /api/dispositivos</code></td><td>dispositivos configurados e se estão online</td></tr>
+  <tr><td><code>GET /api/dispositivos/{id}/leitura-atual</code></td><td>última leitura, relé, alerta, limites, intervalo</td></tr>
+  <tr><td><code>GET /api/dispositivos/{id}/historico?de=&amp;ate=</code></td><td>pontos por minuto para os gráficos</td></tr>
+  <tr><td><code>GET /api/dispositivos/{id}/consumo?de=&amp;ate=</code></td><td>kWh do período e custo estimado (R$)</td></tr>
+  <tr><td><code>GET /api/dispositivos/{id}/eventos?limite=</code></td><td>alertas e eventos mais recentes</td></tr>
+  <tr><td><code>POST /api/dispositivos/{id}/rele</code></td><td><code>{"estado":"ON"|"OFF"}</code> · exige <code>X-API-Key</code></td></tr>
+  <tr><td><code>PUT /api/dispositivos/{id}/limites</code></td><td>novos limites · exige <code>X-API-Key</code></td></tr>
+  <tr><td><code>PUT /api/dispositivos/{id}/intervalo</code></td><td>novo intervalo · exige <code>X-API-Key</code></td></tr>
+</table>
+
+<!-- ============================== 6 ============================== -->
+<h2 class="quebra">6. Testes</h2>
+<table>
+  <tr><th style="width:21%">O que foi testado</th><th style="width:40%">Como</th><th>Resultado</th></tr>
+  <tr><td>Regras do backend</td><td>40 testes automatizados (JUnit 5 + Mockito) em 6 classes: validação de leituras, alertas e comandos; cálculo de consumo com reinício do ESP32; roteamento MQTT (JSON quebrado, tópico errado, dispositivo não autorizado, mensagem &gt; 2 KB); agrupamento do histórico; horário do servidor quando <code>timestamp</code> = 0.</td><td class="ok">40/40 passando, também no CI do GitHub a cada push.</td></tr>
+  <tr><td>Frontend</td><td>ESLint e build de produção (Vite) no CI.</td><td class="ok">Sem erros.</td></tr>
+  <tr><td>Fluxo ponta a ponta sem o Wokwi</td><td>Script <code>scripts/simular-esp32.sh</code> publica leituras e alertas no broker; conferidos a API, o banco e o dashboard.</td><td class="ok">Dados aparecem no dashboard em até 2 s; alertas viram eventos.</td></tr>
+  <tr><td>Regra local dos 5 s (R2)</td><td>No Wokwi: tensão abaixo de 198 V por menos de 5 s, depois por mais de 5 s; mensagens capturadas no broker (Seção 5).</td><td class="ok">Pico curto: só alerta. Após 5 s: relé desligado e buzzer contínuo; com a tensão já normal (217 V), o relé continuou desligado até o comando de religar.</td></tr>
+  <tr><td>Comandos (relé, limites, intervalo)</td><td>Botões do dashboard; conferência do tópico <code>comandos</code> e da leitura de confirmação do ESP32.</td><td class="ok">Estado confirmado no dashboard após a leitura seguinte.</td></tr>
+  <tr><td>Erros da API</td><td>Chamadas sem chave, com valores fora da faixa, dispositivo inexistente e broker desconectado.</td><td class="ok">401, 400, 404 e 503 com mensagem em JSON.</td></tr>
+  <tr><td>Funcionamento sem internet</td><td>Simulação com o Wi-Fi desconectado.</td><td class="ok">Medição, OLED, LEDs, buzzer e proteção continuam funcionando.</td></tr>
+  <tr><td>Deploy</td><td>Push no repositório principal dispara o GitHub Actions, que atualiza a VM e confere a API.</td><td class="ok">Execução concluída com sucesso; dados do banco preservados.</td></tr>
+</table>
+
+<h3>Falhas encontradas e correções</h3>
+<table>
+  <tr><th style="width:24%">Falha</th><th style="width:38%">Causa</th><th>Correção</th></tr>
+  <tr><td>O relé não desligava em subtensão.</td><td>Os eventos gravados no banco mostravam <code>SUBTENSAO</code> com o relé ligado e encerrado 2 s depois. O Wokwi estava rodando uma versão antiga do sketch, em que só a sobrecorrente abria o relé.</td><td>Versão atualizada do sketch carregada no Wokwi; o teste foi repetido e o desligamento conferido pelos alertas com <code>"rele":"OFF"</code>.</td></tr>
+  <tr><td>O dispositivo aparecia online e offline várias vezes por segundo.</td><td>Duas abas com a mesma simulação usam o mesmo <i>client ID</i> no broker, que derruba uma conexão a cada vez que a outra entra (visível nos eventos da Figura 5).</td><td>Procedimento de rodar apenas uma simulação por vez; melhoria futura: <i>client ID</i> único por sessão.</td></tr>
+  <tr><td>O dashboard mostrava alerta vermelho com o dispositivo offline.</td><td>A faixa de alerta usava a última leitura recebida, mesmo antiga.</td><td>A faixa de alerta só aparece com o dispositivo online; offline, o aviso informa o último alerta como dado antigo.</td></tr>
+  <tr><td>Eixo do gráfico com valores como 221,30000000000007.</td><td>Erro de ponto flutuante exibido sem formatação.</td><td>Formatação dos eixos e do domínio do gráfico.</td></tr>
+  <tr><td>Dashboard inacessível pela internet na porta 8088.</td><td>A <i>Security List</i> da Oracle Cloud bloqueava a porta.</td><td>Dashboard servido pelo nginx da VM na porta 80, sem abrir portas novas.</td></tr>
+</table>
+
+<!-- ============================== 7 ============================== -->
+<h2>7. Segurança</h2>
+<h3>Credenciais fora do repositório</h3>
+<ul>
+  <li>Senhas do banco, chave da API e dados do broker ficam no arquivo <code>.env</code>, listado no <code>.gitignore</code>. O repositório tem apenas o <code>.env.example</code>, com valores de exemplo.</li>
+  <li>O <code>docker-compose.yml</code> não sobe sem <code>DB_PASSWORD</code>, <code>DB_ROOT_PASSWORD</code> e <code>FLOWSENSE_API_KEY</code> definidas.</li>
+  <li>A chave SSH do deploy fica nos <i>Secrets</i> do GitHub, nunca no código.</li>
+  <li>O sketch do Wokwi contém apenas valores públicos (rede <code>Wokwi-GUEST</code>, sem senha, e broker público).</li>
+</ul>
+
+<h3>Checklist OWASP IoT Top 10</h3>
+<table>
+  <tr><th style="width:21%">Risco</th><th style="width:30%">Risco no FlowSense</th><th style="width:30%">O que foi feito</th><th>Limitação</th></tr>
+  <tr><td>I1 Senhas fracas ou fixas no código</td><td>Senhas do banco e da API irem para o GitHub junto com o código.</td><td><code>.env</code> fora do Git; senhas geradas na VM; compose exige as variáveis.</td><td>—</td></tr>
+  <tr><td>I2 Serviços de rede inseguros</td><td>Banco e backend ficarem acessíveis pela internet.</td><td>MySQL e backend só em <code>127.0.0.1</code>; apenas a porta 80 aberta; banco acessado por túnel SSH.</td><td>Sem HTTPS no dashboard (acesso por IP).</td></tr>
+  <tr><td>I3 Interfaces do ecossistema inseguras</td><td>Qualquer pessoa chamar a API e desligar a carga.</td><td>Comandos exigem <code>X-API-Key</code>; CORS restrito; validação de todos os campos; erros sem detalhes internos.</td><td>A chave fica embutida no dashboard; não há login de usuário.</td></tr>
+  <tr><td>I4 Atualização insegura</td><td>Firmware ser trocado por um de fonte não confiável.</td><td>Sem OTA: não há canal de atualização remota a ser atacado.</td><td>Atualização exige acesso à placa.</td></tr>
+  <tr><td>I5 Componentes desatualizados</td><td>Uso de bibliotecas com falhas conhecidas.</td><td>Versões atuais (Spring Boot 4.1, React 18, MySQL 8.4); CI compila tudo a cada push.</td><td>Sem varredura automática de dependências.</td></tr>
+  <tr><td>I6 Privacidade</td><td>Consumo revela a rotina da casa.</td><td>Dados guardados só na VM do grupo; retenção de 90 dias com limpeza diária.</td><td>Broker público pode ser lido por terceiros.</td></tr>
+  <tr><td>I7 Transferência e armazenamento inseguros</td><td>Alguém publicar mensagens falsas no broker público.</td><td>Backend aceita só os IDs configurados, confere o ID do payload com o do tópico, limita a 2 KB e valida faixas; ESP32 recusa limites fora da faixa física.</td><td>Broker sem TLS nem autenticação: alguém pode publicar comandos direto no tópico.</td></tr>
+  <tr><td>I8 Falta de gerenciamento</td><td>Não saber se o dispositivo caiu.</td><td>Status com <i>Last Will</i>; eventos online/offline; aviso de offline no dashboard.</td><td>—</td></tr>
+  <tr><td>I9 Configurações padrão inseguras</td><td>Containers rodando como root; portas padrão abertas.</td><td>Backend roda com usuário sem privilégios; limites de memória; chave de deploy restrita a um único script.</td><td>—</td></tr>
+  <tr><td>I10 Proteção física</td><td>Desativar a proteção derrubando a internet.</td><td>A regra de proteção roda no ESP32 e continua funcionando sem rede.</td><td>Acesso físico à placa permite trocar o firmware.</td></tr>
+</table>
+
+<h3>Correções implementadas a partir do checklist</h3>
+<ul>
+  <li><b>I2:</b> para permitir a consulta ao banco pelo MySQL Workbench sem expô-lo na internet, a porta do MySQL foi publicada apenas em <code>127.0.0.1</code> da VM (assim como a do backend), e o acesso é feito por túnel SSH. Nenhuma porta além da 80 foi aberta na nuvem.</li>
+  <li><b>I3/I7:</b> lista de dispositivos permitidos, checagem do ID do tópico, limite de tamanho e validação de faixa em todas as mensagens MQTT e requisições da API.</li>
+  <li><b>I9:</b> a chave SSH usada pelo GitHub Actions só consegue executar o script de deploy na VM (<code>restrict,command=…</code> no <code>authorized_keys</code>), sem terminal nem túneis.</li>
+</ul>
+
+<h3>Autenticação na comunicação</h3>
+<p>Todos os comandos enviados pela API exigem a chave no cabeçalho <code>X-API-Key</code>, comparada em tempo constante pelo backend; sem ela a resposta é 401. O cliente MQTT do backend já suporta usuário, senha e TLS (<code>MQTT_USER</code>, <code>MQTT_PASSWORD</code>, <code>MQTT_TLS</code>), o que permite migrar para um broker autenticado sem mudar o código. O broker público foi mantido porque é o que o Wokwi gratuito alcança com facilidade; essa é a principal limitação de segurança do projeto.</p>
+
+<!-- ============================== 8 ============================== -->
+<h2>8. Conclusão</h2>
+<p>O FlowSense cumpre a proposta aprovada: mede tensão e corrente, decide localmente quando proteger a carga, transmite os dados por MQTT, guarda o histórico e apresenta tudo em um dashboard e no próprio dispositivo. Os cinco requisitos são atendidos: sensores e atuadores reagindo às leituras (R1), regra dos 5 s executada no ESP32 sem internet (R2), MQTT sobre Wi-Fi justificado (R3), payload JSON documentado com mensagens reais (R4) e estado visível no dashboard, no OLED, nos LEDs e no buzzer (R5).</p>
+<h3>Dificuldades</h3>
+<ul>
+  <li>Instabilidade do gateway de rede gratuito do Wokwi, que às vezes demora ou falha ao conectar o Wi-Fi.</li>
+  <li>Simulações abertas em mais de uma aba derrubando a conexão MQTT uma da outra.</li>
+  <li>Configuração de rede da Oracle Cloud (Security List e firewall do Ubuntu) e convivência com outro site já hospedado na mesma VM.</li>
+  <li>Definir uma regra de proteção que não desligue a instalação a cada oscilação rápida.</li>
+</ul>
+<h3>Aprendizados</h3>
+<ul>
+  <li>Separar o que precisa ser decidido na borda (proteção) do que pode ficar no servidor (histórico, custo, interface).</li>
+  <li>Uso prático do MQTT: QoS, mensagens retidas e <i>Last Will</i> para detectar dispositivos offline.</li>
+  <li>Em um broker público, o backend precisa desconfiar de toda mensagem e validar tudo.</li>
+  <li>Containers, deploy automatizado e testes no CI tornam as entregas mais seguras e repetíveis.</li>
+</ul>
+<h3>Melhorias futuras</h3>
+<ul>
+  <li>Montagem com os sensores reais, calculando a tensão e a corrente eficazes (RMS) por amostragem e o fator de potência.</li>
+  <li>Broker próprio com usuário, senha e TLS, e <i>client ID</i> único por dispositivo.</li>
+  <li>Login de usuários no dashboard e HTTPS com domínio próprio.</li>
+  <li>Botão físico de rearme, para religar a carga mesmo sem internet.</li>
+  <li>Alertas por e-mail ou mensagem, vários dispositivos e atualização de firmware pelo ar (OTA) assinada.</li>
+</ul>
+
+<!-- ============================== 9 ============================== -->
+<h2>9. Uso de ferramentas de IA</h2>
+<p>O grupo utilizou o assistente <b>Claude</b> (Anthropic), por meio da ferramenta Claude Code, como apoio ao desenvolvimento. Foram produzidos com esse apoio:</p>
+<ul>
+  <li>a reescrita do backend (Spring Boot) e do dashboard (React) a partir de uma especificação escrita pelo grupo com base na proposta aprovada;</li>
+  <li>o <code>docker-compose</code>, a implantação na VM, o pipeline de CI/CD no GitHub Actions e o script de simulação;</li>
+  <li>a alteração da regra de proteção do ESP32 para o comportamento dos 5 s, definido pelo grupo;</li>
+  <li>o diagnóstico de falhas durante os testes (Seção 6);</li>
+  <li>a primeira versão deste relatório (texto e figuras), revisada pelo grupo.</li>
+</ul>
+<p>A proposta, a escolha do tema e dos componentes, o circuito no Wokwi, as regras de funcionamento e a validação final do sistema foram feitos pelo grupo.</p>
+<p><b>Como o resultado foi verificado:</b> execução dos 40 testes automatizados do backend e do lint/build do frontend, localmente e no CI; testes ponta a ponta com o script de simulação e com o Wokwi, conferindo as mensagens no broker, os registros no banco e o dashboard; comparação de cada funcionalidade com a proposta aprovada; e leitura e discussão do código pelos integrantes, para que todos consigam explicar qualquer parte na defesa.</p>
+
+<!-- ============================== 10 ============================== -->
+<h2>10. Referências</h2>
+<ol style="font-size:9.6pt">
+  <li>MUCELINI, M. A. C. <i>Trabalho final da disciplina de Internet das Coisas</i>. 2º semestre/2026.</li>
+  <li>OASIS. <i>MQTT Version 5.0</i>. Disponível em: https://docs.oasis-open.org/mqtt/mqtt/v5.0/.</li>
+  <li>OWASP. <i>Internet of Things Top 10</i> (2018). Disponível em: https://owasp.org/www-project-internet-of-things/.</li>
+  <li>ESPRESSIF SYSTEMS. <i>ESP32 Technical Reference e ESP-IDF Programming Guide</i> (ADC, Wi-Fi). Disponível em: https://docs.espressif.com/.</li>
+  <li>ARDUINO. <i>Language Reference</i>. Disponível em: https://www.arduino.cc/reference/.</li>
+  <li>WOKWI. <i>Wokwi Docs</i> (ESP32, Wi-Fi e componentes). Disponível em: https://docs.wokwi.com/.</li>
+  <li>O'LEARY, N. <i>PubSubClient — Arduino client for MQTT</i>. Disponível em: https://pubsubclient.knolleary.net/.</li>
+  <li>BLANCHON, B. <i>ArduinoJson</i>. Disponível em: https://arduinojson.org/.</li>
+  <li>ADAFRUIT. <i>Adafruit SSD1306 e Adafruit GFX Library</i>. Disponível em: https://github.com/adafruit.</li>
+  <li>ECLIPSE FOUNDATION. <i>Eclipse Paho MQTT Java Client</i>. Disponível em: https://eclipse.dev/paho/.</li>
+  <li>VMWARE/BROADCOM. <i>Spring Boot Reference Documentation</i>. Disponível em: https://docs.spring.io/spring-boot/.</li>
+  <li>REDGATE. <i>Flyway Documentation</i>. Disponível em: https://documentation.red-gate.com/flyway.</li>
+  <li>META. <i>React Documentation</i>. Disponível em: https://react.dev/. RECHARTS. Disponível em: https://recharts.org/.</li>
+  <li>DOCKER. <i>Docker Compose Documentation</i>. Disponível em: https://docs.docker.com/compose/.</li>
+  <li>HIVEMQ. <i>Public MQTT Broker</i>. Disponível em: https://www.hivemq.com/mqtt/public-mqtt-broker/.</li>
+  <li>Datasheets: <i>ZMPT101B Voltage Transformer</i> e <i>YHDC SCT-013-000 Current Transformer</i>.</li>
+</ol>
+
+</body>
+</html>

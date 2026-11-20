@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Organização do código</title>
+<style>
+  :root {
+    --verde: #15803d;  --verde-bg: #dcfce7;
+    --azul: #1e3a8a;   --azul-bg: #e0e7ff;
+    --roxo: #7c3aed;   --roxo-bg: #ede9fe;
+    --cinza: #475569;  --cinza-bg: #f1f5f9;
+    --laranja: #c2410c;
+    --texto: #111827;  --sub: #4b5563;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { background: #fff; }
+  body { width: 1075px; padding: 14px; font-family: "Segoe UI", Calibri, Arial, sans-serif; color: var(--texto); }
+
+  .repo { border: 2px dashed #94a3b8; border-radius: 14px; padding: 10px 12px 12px; }
+  .repo-titulo { font: 600 15px Consolas, "Cascadia Mono", monospace; color: #334155; margin-bottom: 10px; }
+  .repo-titulo span { font: 400 13px "Segoe UI", sans-serif; color: var(--sub); margin-left: 8px; }
+
+  .colunas { display: grid; grid-template-columns: 200px 46px 1fr 46px 245px; align-items: stretch; }
+
+  .col { border: 2px solid; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; }
+  .cab { color: #fff; padding: 7px 10px; text-align: center; }
+  .cab b { display: block; font-size: 15.5px; }
+  .cab small { font: 11px Consolas, monospace; opacity: .9; white-space: nowrap; }
+  .corpo { padding: 9px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+
+  .fw  { border-color: var(--verde); background: #f0fdf4; } .fw .cab { background: var(--verde); }
+  .be  { border-color: var(--azul);  background: #f8faff; } .be .cab { background: var(--azul); }
+  .fe  { border-color: var(--roxo);  background: #faf5ff; } .fe .cab { background: var(--roxo); }
+
+  .cx { background: #fff; border: 1.5px solid; border-radius: 8px; padding: 6px 8px; }
+  .cx .p { font: 600 13px Consolas, "Cascadia Mono", monospace; }
+  .cx .papel { font-size: 11.5px; color: var(--sub); }
+  .cx .arq { font-size: 11.5px; line-height: 1.35; margin-top: 2px; }
+  .fw .cx { border-color: #86efac; } .fw .cx .p { color: var(--verde); }
+  .be .cx { border-color: #a5b4fc; } .be .cx .p { color: var(--azul); }
+  .fe .cx { border-color: #c4b5fd; } .fe .cx .p { color: var(--roxo); }
+
+  .seta-v { text-align: center; color: #94a3b8; font-size: 13px; line-height: 1; }
+
+  .linha2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .be-grid { display: grid; grid-template-columns: 1fr 150px; gap: 8px; flex: 1; }
+  .camadas { display: flex; flex-direction: column; gap: 4px; }
+  .lado { display: flex; flex-direction: column; gap: 6px; }
+  .lado .cx { background: var(--cinza-bg); border-style: dashed; }
+  .lado .titulo-lado { font-size: 11px; color: var(--sub); text-align: center; text-transform: uppercase; letter-spacing: .04em; }
+  .db { background: var(--azul); color: #fff; border-radius: 8px; padding: 6px 8px; text-align: center; }
+  .db b { font-size: 13.5px; } .db div { font-size: 11px; opacity: .9; }
+  .rotulo-camada { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: #64748b; margin: 2px 0 -1px 2px; }
+
+  .ponte { display: flex; flex-direction: column; align-items: center; padding-top: 108px; gap: 2px; }
+  .ponte .tag { font-size: 11px; font-weight: 700; color: var(--sub); }
+  .ponte svg { display: block; }
+
+  .nota-fw { font-size: 11.5px; color: var(--verde); font-weight: 600; text-align: center; margin-top: auto; }
+
+  .infra { margin-top: 10px; display: grid; grid-template-columns: 130px repeat(4, 1fr); gap: 8px; align-items: stretch; }
+  .infra .rot { background: var(--cinza); color: #fff; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; text-align: center; font-weight: 700; font-size: 14px; padding: 6px; }
+  .infra .rot small { font-weight: 400; font-size: 11px; opacity: .9; }
+  .infra .cx { border-color: #cbd5e1; background: var(--cinza-bg); }
+  .infra .cx .p { color: #334155; font-size: 12px; }
+
+  .legenda { display: flex; justify-content: center; gap: 30px; margin-top: 10px; font-size: 12.5px; color: var(--sub); align-items: center; }
+  .legenda i { display: inline-block; width: 22px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 6px; border: 1.5px solid; }
+</style>
+</head>
+<body>
+<div class="repo">
+  <div class="repo-titulo">Flow-Sense-Monitor/ <span>repositório principal · três submódulos Git (firmware, backend, frontend)</span></div>
+
+  <div class="colunas">
+    <!-- FIRMWARE -->
+    <div class="col fw">
+      <div class="cab"><b>Dispositivo</b><small>wokwi/ · flowsense-firmware/</small></div>
+      <div class="corpo">
+        <div class="cx"><div class="p">wokwi/sketch.ino</div><div class="papel">código do ESP32 na simulação</div>
+          <div class="arq">leitura de tensão/corrente, relé, LEDs, buzzer, OLED, cliente MQTT</div></div>
+        <div class="cx"><div class="p">wokwi/libraries.txt</div><div class="papel">bibliotecas da simulação</div></div>
+        <div class="cx"><div class="p">flowsense-firmware/</div><div class="papel">submódulo reservado para o hardware físico</div></div>
+        <div class="nota-fw">regra dos 5 s roda<br>no próprio ESP32</div>
+      </div>
+    </div>
+
+    <!-- PONTE MQTT -->
+    <div class="ponte">
+      <span class="tag">MQTT</span>
+      <svg width="40" height="34" viewBox="0 0 40 34"><path d="M2 10 H32" stroke="#15803d" stroke-width="3"/><path d="M30 4 L38 10 L30 16 Z" fill="#15803d"/><path d="M38 25 H8" stroke="#c2410c" stroke-width="3"/><path d="M10 19 L2 25 L10 31 Z" fill="#c2410c"/></svg>
+    </div>
+
+    <!-- BACKEND -->
+    <div class="col be">
+      <div class="cab"><b>Backend</b><small>flowsense-backend/ · Spring Boot</small></div>
+      <div class="corpo">
+        <div class="be-grid">
+          <div class="camadas">
+            <div class="rotulo-camada">entrada</div>
+            <div class="linha2">
+              <div class="cx"><div class="p">mqtt/</div><div class="arq">MqttClienteFlowsense<br>MqttRoteador</div></div>
+              <div class="cx"><div class="p">controller/</div><div class="arq">DispositivoController<br><span class="papel">API REST</span></div></div>
+            </div>
+            <div class="seta-v">▼</div>
+            <div class="rotulo-camada">regras de negócio</div>
+            <div class="cx"><div class="p">service/</div>
+              <div class="arq">LeituraService · EventoService · ComandoService<br>ConsultaService · LimpezaService<br>ValidadorPayload · CalculadoraConsumo</div></div>
+            <div class="seta-v">▼</div>
+            <div class="rotulo-camada">acesso a dados</div>
+            <div class="cx"><div class="p">repository/ + entity/</div>
+              <div class="arq">LeituraAtual · HistoricoResumido · EventosImportantes</div></div>
+            <div class="seta-v">▼</div>
+            <div class="db"><b>MySQL</b><div>tabelas criadas pelo Flyway · db/migration/V1__criar_tabelas.sql</div></div>
+          </div>
+          <div class="lado">
+            <div class="titulo-lado">apoio</div>
+            <div class="cx"><div class="p">dto/</div><div class="arq">mqtt · request · response</div></div>
+            <div class="cx"><div class="p">exception/</div><div class="arq">GlobalExceptionHandler + exceções</div></div>
+            <div class="cx"><div class="p">config/</div><div class="arq">ApiKeyInterceptor · WebConfig</div></div>
+            <div class="cx"><div class="p">src/test/</div><div class="arq">6 classes de teste (JUnit)</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PONTE HTTP -->
+    <div class="ponte">
+      <span class="tag">HTTP</span>
+      <svg width="40" height="34" viewBox="0 0 40 34"><path d="M2 10 H32" stroke="#15803d" stroke-width="3"/><path d="M30 4 L38 10 L30 16 Z" fill="#15803d"/><path d="M38 25 H8" stroke="#c2410c" stroke-width="3"/><path d="M10 19 L2 25 L10 31 Z" fill="#c2410c"/></svg>
+    </div>
+
+    <!-- FRONTEND -->
+    <div class="col fe">
+      <div class="cab"><b>Dashboard</b><small>flowsense-frontend/ · React + Vite</small></div>
+      <div class="corpo">
+        <div class="rotulo-camada">comunicação</div>
+        <div class="cx"><div class="p">services/api.js</div><div class="papel">chamadas à API REST</div></div>
+        <div class="seta-v">▼</div>
+        <div class="rotulo-camada">estado</div>
+        <div class="cx"><div class="p">context/ + hooks/</div><div class="arq">DataContext · usePolling<br><span class="papel">atualiza os dados periodicamente</span></div></div>
+        <div class="seta-v">▼</div>
+        <div class="rotulo-camada">interface</div>
+        <div class="cx"><div class="p">components/</div><div class="arq">Cabecalho · Card · Avisos · Graficos<br>ControleRele · Configuracao<br>ListaEventos</div></div>
+        <div class="cx"><div class="p">utils/ · styles/</div><div class="arq">formatacao.js · CSS</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFRA -->
+  <div class="infra">
+    <div class="rot">Infraestrutura<small>raiz do repositório</small></div>
+    <div class="cx"><div class="p">docker-compose.yml</div><div class="arq">MySQL + backend + dashboard</div></div>
+    <div class="cx"><div class="p">.env.example</div><div class="arq">variáveis de ambiente</div></div>
+    <div class="cx"><div class="p">scripts/</div><div class="arq">simular-esp32.sh · deploy-vm.sh</div></div>
+    <div class="cx"><div class="p">.github/workflows/</div><div class="arq">deploy.yml — deploy na VM</div></div>
+  </div>
+</div>
+
+<div class="legenda">
+  <span><svg width="26" height="12" style="vertical-align:-1px;margin-right:6px"><path d="M1 6 H18" stroke="#15803d" stroke-width="3"/><path d="M17 1 L25 6 L17 11 Z" fill="#15803d"/></svg>leituras e alertas</span>
+  <span><svg width="26" height="12" style="vertical-align:-1px;margin-right:6px"><path d="M25 6 H8" stroke="#c2410c" stroke-width="3"/><path d="M9 1 L1 6 L9 11 Z" fill="#c2410c"/></svg>comandos</span>
+  <span>▼ &nbsp;ordem das camadas: cada uma só chama a de baixo</span>
+</div>
+</body>
+</html>

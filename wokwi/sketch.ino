@@ -43,9 +43,16 @@ struct Limites {
   float correnteMax;
 };
 Limites limites = {198.0, 242.0, 20.0};
+// tempo minimo entre um envio e outro quando a energia esta oscilando (da pra mudar pelo dashboard)
 unsigned long intervaloEnvio = 2000;
 
 const unsigned long TEMPO_DISPARO_MS = 5000;
+
+// So manda leitura quando algo muda. Se ficar tudo parado, manda mesmo assim
+// de 1 em 1 min pra mostrar que o ESP32 continua conectado.
+const unsigned long ENVIO_PARADO_MS = 60000;
+const float VARIACAO_TENSAO   = 1.0;   // V - menos que isso e ruido do ADC
+const float VARIACAO_CORRENTE = 0.10;  // A
 
 float tensao = 0, corrente = 0, potencia = 0;
 double kwh = 0;
@@ -56,6 +63,11 @@ String alertaAtual = "NORMAL";
 bool foraDaFaixa = false;
 unsigned long inicioFora = 0;
 bool buzzerTocando = false;
+
+// o que foi mandado na ultima leitura, pra comparar com o valor atual
+float tensaoEnviada = -1000, correnteEnviada = -1000;
+bool releEnviado = true;
+String alertaEnviado = "";
 
 WiFiClient wifiClient;
 PubSubClient mqtt(wifiClient);
@@ -179,8 +191,24 @@ void publicarLeitura() {
 
   char buffer[400];
   serializeJson(doc, buffer, sizeof(buffer));
-  mqtt.publish(topicoLeituras.c_str(), buffer);
+  ultimoEnvio = millis();
+  if (!mqtt.publish(topicoLeituras.c_str(), buffer)) {
+    Serial.println("[MQTT] Falha ao publicar leitura");
+    alertaEnviado = "";  // assim tenta de novo no proximo intervalo, e nao a cada volta do loop
+    return;
+  }
+  tensaoEnviada   = tensao;
+  correnteEnviada = corrente;
+  releEnviado     = releLigado;
+  alertaEnviado   = alertaAtual;
   Serial.printf("[MQTT] %s -> %s\n", topicoLeituras.c_str(), buffer);
+}
+
+bool energiaMudou() {
+  return fabsf(tensao - tensaoEnviada) >= VARIACAO_TENSAO
+      || fabsf(corrente - correnteEnviada) >= VARIACAO_CORRENTE
+      || releLigado != releEnviado
+      || alertaAtual != alertaEnviado;
 }
 
 void publicarAlerta() {
@@ -363,8 +391,13 @@ void loop() {
       }
     } else {
       mqtt.loop();
-      if (agora - ultimoEnvio >= intervaloEnvio) {
-        ultimoEnvio = agora;
+      unsigned long semEnviar = millis() - ultimoEnvio;
+      if (energiaMudou() && semEnviar >= intervaloEnvio) {
+        publicarLeitura();
+      } else if (semEnviar >= ENVIO_PARADO_MS) {
+        Serial.println("[MQTT] 1 min sem variacao, mandando leitura pra manter online");
+        // reforca o status retido: se o broker tiver guardado um "offline" velho, corrige aqui
+        mqtt.publish(topicoStatus.c_str(), "online", true);
         publicarLeitura();
       }
     }

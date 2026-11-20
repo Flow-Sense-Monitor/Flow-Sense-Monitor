@@ -43,7 +43,7 @@ flowsense/
 
 | Tópico | Quem publica | Quando | Conteúdo |
 |---|---|---|---|
-| `flowsense/{id}/leituras` | ESP32 | a cada 2 s (configurável) | JSON com a leitura completa |
+| `flowsense/{id}/leituras` | ESP32 | quando a energia varia (no máximo 1 a cada `intervalo`, padrão 2 s); se nada mudar, 1 por minuto | JSON com a leitura completa |
 | `flowsense/{id}/alertas` | ESP32 | só quando o alerta muda | JSON com o tipo do alerta |
 | `flowsense/{id}/status` | ESP32 / broker | ao conectar / quando cai | texto `online` ou `offline` (retido; o `offline` é a "última vontade" publicada pelo broker) |
 | `flowsense/{id}/comandos` | backend | quando o usuário age no dashboard | JSON com o comando |
@@ -224,10 +224,11 @@ As tabelas são criadas pelo Flyway (`flyway_schema_history` registra as migraç
 
 ## Decisões de projeto
 
-- **Polling em vez de WebSocket no dashboard**: a proposta define que o frontend fala com o backend somente por REST. A leitura atual é buscada a cada 2 s (o mesmo intervalo do ESP32); histórico a cada 30 s; eventos a cada 5 s.
-- **Histórico agregado por minuto** (upsert com médias incrementais) em vez de gravar cada leitura de 2 s: ~1.440 linhas por dia por dispositivo, suficiente para os gráficos e leve para o disco da VM. Gráficos de 24 h e 7 dias agrupam em pontos de 5 e 30 minutos.
+- **Polling em vez de WebSocket no dashboard**: a proposta define que o frontend fala com o backend somente por REST. A leitura atual é buscada a cada 2 s (o intervalo padrão do ESP32 quando a energia varia); histórico a cada 30 s; eventos a cada 5 s.
+- **Histórico agregado por minuto** (upsert com médias incrementais) em vez de gravar cada leitura que chega: ~1.440 linhas por dia por dispositivo, suficiente para os gráficos e leve para o disco da VM. Gráficos de 24 h e 7 dias agrupam em pontos de 5 e 30 minutos.
 - **Consumo de um intervalo sem backend** (ex.: backend reiniciando) é atribuído ao minuto da próxima leitura, porque o kWh é acumulado no ESP32.
-- **Dispositivo offline** no dashboard: quando o broker publica `offline` (LWT) ou quando passam mais de 3 intervalos (mínimo 15 s) sem leitura.
+- **Envio só quando muda + 1 por minuto**: o ESP32 continua lendo os sensores e aplicando a proteção o tempo todo, mas só publica quando a tensão muda 1 V ou mais, a corrente 0,1 A ou mais, ou quando o relé ou o alerta mudam (respeitando o `intervalo` mínimo entre envios). Se ficar tudo parado, ele manda uma leitura por minuto e republica o status `online`, assim o dashboard sabe que ele continua conectado. O consumo não se perde entre um envio e outro porque o kWh é somado no próprio ESP32.
+- **Dispositivo offline** no dashboard: quando o broker publica `offline` (LWT, uns 20 s depois da queda) ou quando passam 130 s sem nenhuma leitura (2 envios de 1 min perdidos).
 - **Eventos de online/offline** só são gravados quando o estado muda (a mensagem `status` é retida e chega de novo a cada reconexão).
 - **Comandos** são publicados com QoS 1, sem retenção (um comando antigo não deve ser reexecutado quando o ESP32 reconectar). O backend responde `202`, e o estado real aparece na próxima leitura.
 - **nginx do frontend repassa `/api`** ao backend: o navegador acessa um único endereço e as portas do backend e do banco não ficam expostas.
